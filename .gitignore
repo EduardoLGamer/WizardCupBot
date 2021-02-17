@@ -1,0 +1,4 @@
+node_modules
+src/commands/developer/
+package-lock.json
+src/data/secret.json
