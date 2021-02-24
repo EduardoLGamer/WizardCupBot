@@ -34,7 +34,7 @@ module.exports = {
         },
       });
 
-    const clan = require("../../models/clan");
+    const clan = require("../../models/clan_E-Sports");
 
     const infoClan = await clan.findOne({ tag1: tag });
     if (!infoClan)

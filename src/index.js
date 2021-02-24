@@ -6,7 +6,7 @@ const express = require("express");
 const config = require("./data/config.json");
 const secret = require("./data/secret.json");
 
-require("dotenv").config();
+require("./util/dataBaseConnect");
 
 const bot = new Discord.Client();
 

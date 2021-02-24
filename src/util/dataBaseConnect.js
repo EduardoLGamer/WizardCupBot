@@ -1,9 +1,8 @@
 const moongose = require("mongoose");
 const colors = require("colors");
+const secret = require("../data/secret.json");
 
-require("dotenv").config();
-
-moongose.connect(process.env.MongoDB_URL, {
+moongose.connect(secret.MongoDB.url, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,

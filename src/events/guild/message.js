@@ -2,7 +2,6 @@ const Discord = require("discord.js");
 
 const config = require("../../data/config.json");
 const data = require("../../data/data.json");
-const db = require("../../util/dataBaseConnect");
 
 module.exports = async (bot, message) => {
   if (message.author.bot) return;

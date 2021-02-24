@@ -37,8 +37,8 @@ module.exports = {
         embed: {
           color: data.color.red,
           description: `
-          ${data.emoji.es} | Ya tienes un registro creado
-          ${data.emoji.us} | You already have a record created
+${data.emoji.es} | Ya tienes un registro creado
+${data.emoji.us} | You already have a record created
           `,
         },
       });
@@ -64,8 +64,8 @@ module.exports = {
       embed: {
         color: data.color[1],
         description: `
-            ${data.emoji.es} | Se creo un canal por donde tienes que registrarte
-            ${data.emoji.us} | A channel was created where you have to register
+${data.emoji.es} | Se creo un canal por donde tienes que registrarte
+${data.emoji.us} | A channel was created where you have to register
 
             ────> <#${channel.id}> <────
             `,
@@ -109,8 +109,11 @@ module.exports = {
               description: `${data.emoji.es} El tag debe comenzar con #\n${data.emoji.us} The tag must start with #`,
             },
           });
+        const aTag1 = msg.content.toUpperCase();
+        const tag1 = aTag1.replace(/O/g, "0");
+
         try {
-          const findClan = await CoC.clanByTag(msg.content);
+          const findClan = await CoC.clanByTag(tag1);
         } catch (e) {
           return channel.send({
             embed: {
@@ -120,7 +123,7 @@ module.exports = {
           });
         }
 
-        if (await clan.findOne({ tag1: msg.content }))
+        if (await clan.findOne({ tag1: tag1 }))
           return channel.send({
             embed: {
               color: data.color.red,
@@ -128,7 +131,7 @@ module.exports = {
             },
           });
 
-        clanTag1 = msg.content;
+        clanTag1 = tag1;
         clanTag1Collector.stop();
 
         /*<──  ───────    CLAN-TAG2   ───────  ──>*/
@@ -143,8 +146,10 @@ module.exports = {
                 description: `${data.emoji.es} El tag debe comenzar con #\n${data.emoji.us} The tag must start with #`,
               },
             });
+          const aTag2 = msg.content.toUpperCase();
+          const tag2 = aTag2.replace(/O/g, "0");
           try {
-            const findClan = await CoC.clanByTag(msg.content);
+            const findClan = await CoC.clanByTag(tag2);
           } catch (e) {
             return channel.send({
               embed: {
@@ -153,7 +158,7 @@ module.exports = {
               },
             });
           }
-          if (await clan.findOne({ tag2: msg.content }))
+          if (await clan.findOne({ tag2: tag2 }))
             return channel.send({
               embed: {
                 color: data.color.red,
@@ -161,7 +166,7 @@ module.exports = {
               },
             });
 
-          clanTag2 = msg.content;
+          clanTag2 = tag2;
           clanTag2Collector.stop();
 
           /*<──  ───────    CLAN-REPRESENTATIVE   ───────  ──>*/
@@ -171,6 +176,16 @@ module.exports = {
             filter
           );
           clanRepresentativeCollector.on("collect", async (msg) => {
+            const searchUser = message.guild.members.resolve(msg.content);
+
+            if (!searchUser)
+              return channel.send({
+                embed: {
+                  color: data.color.red,
+                  description: `${data.emoji.es} Este miembro no existe o no se encuentra en el servidor\nTip: Si se trata de un error dile al miembro que escriba cualquier mensaje en el chat\n${data.emoji.us} This member does not exist or is not on the server \nTip: If it is an error tell the member to write any message in the chat`,
+                },
+              });
+
             clanRepresentative = msg.content;
             clanRepresentativeCollector.stop();
 
@@ -181,6 +196,16 @@ module.exports = {
               filter
             );
             clanRepresentative2Collector.on("collect", async (msg) => {
+              const searchUser = message.guild.members.resolve(msg.content);
+
+              if (!searchUser)
+                return channel.send({
+                  embed: {
+                    color: data.color.red,
+                    description: `${data.emoji.es} Este miembro no existe o no se encuentra en el servidor\nTip: Si se trata de un error dile al miembro que escriba cualquier mensaje en el chat\n${data.emoji.us} This member does not exist or is not on the server \nTip: If it is an error tell the member to write any message in the chat`,
+                  },
+                });
+  
               clanRepresentative2 = msg.content;
               clanRepresentative2Collector.stop();
 
@@ -223,8 +248,7 @@ module.exports = {
                       },
                     });
 
-                  let number = parseFloat(msg.content);
-                  clanMembersNumber = number;
+                  clanMembersNumber = parseFloat(msg.content);
                   clanMembersNumberCollector.stop();
 
                   /*<──  ───────    CLAN-MEMBERS   ───────  ──>*/
@@ -235,96 +259,96 @@ module.exports = {
                   );
                   let status = 0;
                   clanMembersCollector.on("collect", async (msg) => {
-                    if (status < number) {
-                      if (!msg.content.startsWith("#"))
-                        return channel.send({
-                          embed: {
-                            color: data.color.red,
-                            description: `${data.emoji.es} El tag debe comenzar con #\n${data.emoji.us} The tag must start with #`,
-                          },
-                        });
-
-                      try {
-                        await CoC.playerByTag(msg.content);
-                      } catch (e) {
-                        return channel.send({
-                          embed: {
-                            color: data.color.red,
-                            description: `${data.emoji.es} Este jugador no existe\n${data.emoji.us} This player does not exist`,
-                          },
-                        });
-                      }
-                      const x = await clan.findOne({ memberList: msg.content });
-                      if (x)
-                        return channel.send({
-                          embed: {
-                            color: data.color.red,
-                            description: `${data.emoji.es} Este jugador ya esta registrado en un clan\n${data.emoji.us} This player is already registered in a clan`,
-                          },
-                        });
-                      const findUser = await CoC.playerByTag(msg.content);
-
-                      clanMembers.push(msg.content);
-                      status = status + 1;
-
+                    if (!msg.content.startsWith("#"))
                       return channel.send({
                         embed: {
-                          color: data.color[1],
-                          description: `Name: ${findUser.name} \nTag: ${msg.content}\nLevel: ${findUser.townHallLevel}`,
+                          color: data.color.red,
+                          description: `${data.emoji.es} El tag debe comenzar con #\n${data.emoji.us} The tag must start with #`,
                         },
                       });
-                    } else {
-                      clanMembersCollector.stop();
+
+                    try {
+                      await CoC.playerByTag(msg.content);
+                    } catch (e) {
+                      return channel.send({
+                        embed: {
+                          color: data.color.red,
+                          description: `${data.emoji.es} Este jugador no existe\n${data.emoji.us} This player does not exist`,
+                        },
+                      });
                     }
+                    const x = await clan.findOne({ memberList: msg.content });
+                    if (x)
+                      return channel.send({
+                        embed: {
+                          color: data.color.red,
+                          description: `${data.emoji.es} Este jugador ya esta registrado en un clan\n${data.emoji.us} This player is already registered in a clan`,
+                        },
+                      });
+                    const findUser = await CoC.playerByTag(msg.content);
 
-                    /*<──  ───────    CLAN-TWITTER  ───────  ──>*/
-                    channel.send(embed.clanTwitter);
+                    clanMembers.push(msg.content);
+                    status = status + 1;
 
-                    const clanTwitterCollector = channel.createMessageCollector(
-                      filter
-                    );
-                    clanTwitterCollector.on("collect", async (msg) => {
-                      clanTwitter = msg.content;
-                      clanTwitterCollector.stop();
+                    channel.send({
+                      embed: {
+                        color: data.color[1],
+                        description: `Name: ${findUser.name} \nTag: ${msg.content}\nLevel: ${findUser.townHallLevel}`,
+                      },
+                    });
 
-                      /*<──  ───────    CLAN-DESCRIPTION  ───────  ──>*/
-                      channel.send(embed.clanDescription);
+                    if (clanMembersNumber === status) {
+                      clanMembersCollector.stop();
 
-                      const clanDescriptionCollector = channel.createMessageCollector(
+                      /*<──  ───────    CLAN-TWITTER  ───────  ──>*/
+                      channel.send(embed.clanTwitter);
+
+                      const clanTwitterCollector = channel.createMessageCollector(
                         filter
                       );
-                      clanDescriptionCollector.on("collect", async (msg) => {
-                        clanDescription = msg.content;
-                        clanDescriptionCollector.stop();
-                        /*<──  ───────    SAVE IN DB  ───────  ──>*/
+                      clanTwitterCollector.on("collect", async (msg) => {
+                        clanTwitter = msg.content;
+                        clanTwitterCollector.stop();
 
-                        const clan_ESports = await new clan({
-                          name: clanName,
-                          description: clanDescription,
-                          ownerID: message.author.id,
-                          tag1: clanTag1,
-                          tag2: clanTag2,
-                          representative1: clanRepresentative,
-                          representative2: clanRepresentative2,
-                          twitter: clanTwitter,
-                          logo: clanLogo,
-                          memberList: clanMembers,
+                        /*<──  ───────    CLAN-DESCRIPTION  ───────  ──>*/
+                        channel.send(embed.clanDescription);
+
+                        const clanDescriptionCollector = channel.createMessageCollector(
+                          filter
+                        );
+                        clanDescriptionCollector.on("collect", async (msg) => {
+                          clanDescription = msg.content;
+                          clanDescriptionCollector.stop();
+                          /*<──  ───────    SAVE IN DB  ───────  ──>*/
+
+                          const clan_ESports = await new clan({
+                            name: clanName,
+                            description: clanDescription,
+                            ownerID: message.author.id,
+                            tag1: clanTag1,
+                            tag2: clanTag2,
+                            representative1: clanRepresentative,
+                            representative2: clanRepresentative2,
+                            twitter: clanTwitter,
+                            logo: clanLogo,
+                            memberList: clanMembers,
+                          });
+                          clan_ESports.save();
+                          channel.send({
+                            embed: {
+                              color: data.color.red,
+                              description: `${data.emoji.es} Clan registrado correctamente\n${data.emoji.us} Clan successfully registered`,
+                            },
+                          });
+
+                          message.guild
+                            .member(message.member)
+                            .roles.add(config.eSportsRol);
+
+                          setTimeout(() => channel.delete(), 3500);
                         });
-                        clan_ESports.save();
-                        channel.send({
-                          embed: {
-                            color: data.color.red,
-                            description: `${data.emoji.es} Clan registrado correctamente\n${data.emoji.us} Clan successfully registered`,
-                          },
-                        });
-
-                        message.guild
-                          .member(message.member)
-                          .roles.add(config.eSportsRol);
-
-                        setTimeout(() => channel.delete(), 3500);
                       });
-                    });
+                    }
                   });
                 });
               });
